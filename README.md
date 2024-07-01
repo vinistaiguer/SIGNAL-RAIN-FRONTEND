@@ -1,1 +1,1 @@
-# SIGNAL-RAIN-FRONTEND
+# Project under development, documentation being written
