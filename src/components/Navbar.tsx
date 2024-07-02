@@ -1,38 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React from 'react';
 import Logo from '../assets/logo.svg';
 import { WeatherData } from '../types/types';
+import SearchForCity from './InputSearchCity';
 
 interface NavigationProps {
     onDataReceived: (data: WeatherData) => void;
 }
 
-export default function Navigation({ onDataReceived }: NavigationProps) {
-    const [cityName, setCityName] = useState('');
-
-    const { mutate, error, data } = useMutation({
-        mutationFn: () =>
-            axios.post(`http://localhost:3000/api/weather`, { cityName }).then((res) => res.data),
-        onError: (err) => {
-            console.error('An error occurred:', err.message);
-        },
-        onSuccess: (data: WeatherData) => {
-            onDataReceived(data);
-        },
-    });
-
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setCityName(event.target.value);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            mutate();
-        }
-    };
-
-    if (error) return <div>An error has occurred: {error.message}</div>;
+const Navigation: React.FC<NavigationProps> = ({ onDataReceived }) => {
 
     return (
         <>
@@ -45,18 +20,8 @@ export default function Navigation({ onDataReceived }: NavigationProps) {
                             </a>
                             <h1 className="top-1 text-2xl">SIGNAL<strong>RAIN</strong></h1>
                         </div>
-                        
-                        <div className="rounded-lg overflow-hidden">
-                            <input
-                                id="search_for_city"
-                                type="text"
-                                className="border-2 border-zinc-300 h-14 w-96 px-4 rounded-lg hover:cursor-pointer"
-                                placeholder="Digite a cidade que deseja pesquisar"
-                                value={cityName}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
-                            />
-                        </div>
+
+                        <SearchForCity onDataReceived={onDataReceived} />
 
                         <div className="flex justify-between">
                             <a
@@ -78,3 +43,5 @@ export default function Navigation({ onDataReceived }: NavigationProps) {
         </>
     );
 }
+
+export default Navigation;

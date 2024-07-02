@@ -1,50 +1,24 @@
-import { Input } from "@material-tailwind/react";
-import {
-    useQuery
-} from '@tanstack/react-query';
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent } from 'react';
 
-interface TextInputProps {
-    label: string;
-    disabled?: boolean;
-    width?: string;
-    color?: string;
-    height?: string;
+interface GenericInputProps {
+    value: string;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    className?: string;
 }
 
-export function TextInput({ label, ...props }: TextInputProps) {
-    const [value, setValue] = useState('');
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-
-        const { data } = useQuery({
-            queryKey: ['repoData'],
-            queryFn: () =>
-                fetch('https://api.github.com/repos/TanStack/query').then((res) =>
-                    res.json(),
-                ),
-            })
-        
-        console.log("DATA", data)
-        setValue(event.target.value)
-    }
-
+const GenericInput: React.FC<GenericInputProps> = ({ value, onChange, onKeyDown, placeholder, className }) => {
     return (
-        <div className="border-2 border-zinc-300 h-14 w-96 px-4 rounded-lg hover:cursor-pointer">
-            <Input
-                type="text"
-                label={label}
-                value={value}
-                onChange={handleChange}
-                disabled={props.disabled}
-                width={props.width}
-                color={props.color as any}
-                height={props.height}
-                onPointerEnterCapture={() => {}}
-                onPointerLeaveCapture={() => {}}
-                crossOrigin="anonymous" 
-                {...props}
-            />
-        </div>
+        <input
+            type="text"
+            value={value}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            placeholder={placeholder}
+            className={className}
+        />
     );
-}
+};
+
+export default GenericInput;
